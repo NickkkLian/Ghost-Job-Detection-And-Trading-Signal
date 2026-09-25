@@ -1,0 +1,199 @@
+/* Vacancy Signal results page — components on the product family's v4 design tokens (design-tokens.css).
+   Colours come only from tokens. The band (top bar, signature plate, footer) is the dark anchor; on it, focus rings
+   and selection use --on-band, secondary data marks use --on-band-2 / --on-band-3, and a primary button is inverted
+   (--on-band fill, --band text), because in two palettes --accent is the band colour itself. */
+
+/* ===== Fallback faces: until the web fonts load (or if they never do), system fonts are scaled to the measured widths so line lengths and column widths do not jump ===== */
+@font-face{font-family:"Fraunces Fallback";src:local("Georgia"),local("Times New Roman");size-adjust:93.3%}
+@font-face{font-family:"Inter Fallback";src:local("Helvetica Neue"),local("Arial"),local("Segoe UI");size-adjust:106.5%}
+@font-face{font-family:"Space Mono Fallback";src:local("Menlo Regular"),local("Menlo-Regular"),local("Consolas"),local("DejaVu Sans Mono");size-adjust:101.7%}
+
+/* ===== base ===== */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-top:calc(var(--sticky-top,var(--topbar-h)) + var(--space-3));accent-color:var(--accent)}
+body{margin:0;background:var(--bg);color:var(--text);font:var(--weight-regular) var(--text-md)/var(--leading-normal) var(--font-sans);
+  font-variant-numeric:lining-nums;-webkit-tap-highlight-color:transparent;min-height:100vh;display:flex;flex-direction:column}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:var(--grain);opacity:var(--grain-opacity)}
+::selection{background:var(--selection-bg)}
+.topbar ::selection,.plate ::selection,.honest ::selection{background:var(--on-band-2);color:var(--band)}
+:focus-visible{outline:var(--border-focus-width) solid var(--focus);outline-offset:2px;border-radius:var(--radius-xs)}
+.topbar :focus-visible,.plate :focus-visible,.honest :focus-visible,.skip:focus-visible{outline-color:var(--on-band)}
+button{font:inherit;color:inherit}
+a{color:var(--accent-text);text-underline-offset:.18em;text-decoration-thickness:from-font}
+code,kbd,.mono,.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums lining-nums}
+svg{display:block}
+table{border-collapse:collapse}
+p{margin:0}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.skip{position:absolute;left:var(--space-2);top:-48px;z-index:var(--z-toast);background:var(--surface);color:var(--text);
+  padding:var(--space-2) var(--space-3);border:1px solid var(--border-input);border-radius:var(--radius-sm)}
+.skip:focus{top:var(--space-2)}
+h1,h2,h3{margin:0;font-family:var(--font-display);font-weight:var(--display-weight);font-variation-settings:"opsz" var(--opsz-title);
+  line-height:var(--leading-tight);letter-spacing:var(--tracking-title);text-wrap:balance}
+.display{font-size:var(--text-4xl);font-variation-settings:"opsz" var(--opsz-display);letter-spacing:var(--tracking-display);margin-left:-0.028em}
+.eyebrow{font-family:var(--font-sans);font-size:var(--text-2xs);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-caps);
+  text-transform:uppercase;color:var(--text-3)}
+.caption{font-family:var(--font-display);font-style:var(--caption-style);font-weight:400;font-variation-settings:"opsz" var(--opsz-caption);
+  font-size:var(--text-sm);line-height:var(--leading-relaxed);color:var(--text-2);max-width:var(--measure)}
+
+/* ===== top bar: the band ===== */
+.topbar{position:sticky;top:0;z-index:var(--z-sticky);min-height:var(--topbar-h);display:flex;align-items:center;gap:var(--space-3);
+  padding:0 var(--gutter);background:var(--band);color:var(--on-band);border-bottom:1px solid var(--band-line)}
+.brand{display:flex;align-items:center;gap:var(--space-2);color:inherit;text-decoration:none;min-width:0;flex:0 1 auto}
+.brand svg{flex:none}
+.brand b{font-family:var(--font-display);font-weight:var(--display-weight);font-variation-settings:"opsz" var(--opsz-title);
+  font-size:var(--text-xl);letter-spacing:-0.014em;white-space:nowrap;flex:none}
+.brand span{color:var(--on-band-2);font-size:var(--text-xs);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.topbar .pill{display:inline-flex;align-items:center;gap:var(--space-1);height:22px;padding:0 var(--space-2);border-radius:var(--radius-full);
+  white-space:nowrap;color:var(--on-band-2);font:var(--weight-regular) var(--text-2xs)/1 var(--font-mono);border:1px solid var(--band-line);
+  margin-inline-end:auto;flex:none}
+.topbar .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--on-band-warning);flex:none}
+
+/* ===== buttons ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-1);height:var(--control-h);padding:0 var(--space-4);
+  border-radius:var(--radius-sm);border:1px solid var(--border-input);background:var(--paper);color:var(--text);cursor:pointer;
+  font-size:var(--text-sm);font-weight:var(--weight-medium);white-space:nowrap;text-decoration:none;flex:none;
+  transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.btn:active{transform:scale(var(--press-scale))}
+.btn-ghost{border-color:transparent;background:transparent}
+.btn-icon{width:var(--control-h);padding:0}
+.topbar .btn{color:var(--on-band)}
+/* on the band a primary action is inverted: --accent can be the band colour itself */
+.plate .btn-primary{background:var(--on-band);border-color:var(--on-band);color:var(--band)}
+@media (hover:hover) and (pointer:fine){
+  .btn:hover{background:var(--surface-hover)}
+  .topbar .btn-ghost:hover{background:var(--band-line)}
+  .plate .btn-primary:hover{background:var(--on-band-2);border-color:var(--on-band-2)}
+  .ref a:hover{text-decoration-thickness:2px}
+}
+@media (prefers-reduced-motion:reduce){.btn:active{transform:none}}
+@media (pointer:coarse){.btn{min-height:var(--touch-min)}.btn-icon{min-width:var(--touch-min)}}
+/* top bar by width: controls never shrink, only the tagline truncates; the compact tier keeps mark, name, pill, Settings */
+@media (max-width:767px){.topbar #theme,.topbar .gh,.topbar .brand span,.topbar .pill .long{display:none}.topbar .brand b{font-size:var(--text-lg)}}
+/* under 420px the wordmark, the marker and the settings button no longer fit at the normal rhythm (the wordmark was
+   clipped by 2px at 360 with a coarse pointer), so the bar's gap and side padding tighten rather than the type */
+@media (max-width:419px){.topbar{gap:var(--space-2);padding:0 var(--space-3)}}
+@media (min-width:768px) and (max-width:1023px){.topbar .pill .long{display:none}}
+
+/* ===== signature plate: the result, on the band ===== */
+.plate{position:relative;z-index:1;background:var(--band);color:var(--on-band);padding:var(--space-10) var(--gutter) var(--space-8);
+  border-bottom:1px solid var(--band-line)}
+.plate-in{max-width:var(--content-max);margin:0 auto;display:grid;gap:var(--space-8);grid-template-columns:minmax(0,1fr)}
+@media (min-width:1024px){.plate-in{grid-template-columns:minmax(0,5fr) minmax(0,6fr);align-items:start}}
+.plate .eyebrow{color:var(--on-band-2)}
+.plate h1{color:var(--on-band);margin-top:var(--space-3)}
+.plate .lede{margin-top:var(--space-4);color:var(--on-band-2);max-width:var(--measure);font-size:var(--text-lg);line-height:var(--leading-lede)}
+.plate .rule{width:56px;height:2px;background:var(--point);margin-top:var(--space-5);border-radius:1px}
+.plate .actions{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center;margin-top:var(--space-6)}
+.plate .actions a:not(.btn){color:var(--on-band);font-size:var(--text-sm)}
+.plate .caption{color:var(--on-band-2)}
+
+/* bars: total return per strategy, one scale, zero line where the negative range ends */
+.bars{list-style:none;margin:0;padding:0;display:grid;gap:var(--space-3)}
+.bars li{display:grid;grid-template-columns:minmax(0,11.5em) minmax(0,1fr) 5.2em;gap:var(--space-3);align-items:center;font-size:var(--text-sm);color:var(--on-band-2)}
+.bars .label{overflow-wrap:anywhere}
+.bars .value{font-family:var(--font-mono);font-variant-numeric:tabular-nums;text-align:right;color:var(--on-band)}
+.bars .track{position:relative;height:12px}
+/* the zero line carries meaning (the negative leg sits left of it), so it takes the secondary data-mark token rather
+   than the divider token: --band-line measured 1.36-1.74:1 against the band, --on-band-3 measures 3.38-3.41:1. The
+   overhang is half the row gap, so the segments join into one axis instead of four floating dashes. */
+.bars .track::after{content:"";position:absolute;top:calc(-1 * var(--space-3));bottom:calc(-1 * var(--space-3));left:var(--zero);width:1px;background:var(--on-band-3)}
+.bars .bar{position:absolute;top:0;bottom:0;border-radius:var(--radius-xs)}
+.bars .lead .label{color:var(--on-band);font-weight:var(--weight-medium)}
+.bar.point{background:var(--point)}
+.bar.second{background:var(--on-band-2)}
+.bar.third{background:var(--on-band-3)}
+.bar.hatch{background-image:repeating-linear-gradient(135deg,var(--on-band-2) 0 2px,transparent 2px 6px)}
+.plate .diff{margin-top:var(--space-4);padding-top:var(--space-3);border-top:1px solid var(--band-line);
+  font:var(--weight-regular) var(--text-xs)/1.6 var(--font-mono);font-variant-numeric:tabular-nums;color:var(--on-band-2);overflow-wrap:anywhere}
+.plate .diff b{color:var(--on-band);font-weight:700}
+.plate figure{margin:0}
+.plate figcaption{margin-top:var(--space-4)}
+
+/* ===== main: the plate runs edge to edge, the sections sit in the content column ===== */
+main{position:relative;z-index:1;flex:1 0 auto;width:100%}
+.content{max-width:var(--content-max);margin:0 auto;padding:var(--space-10) var(--gutter) var(--space-12);
+  display:grid;gap:var(--space-10);grid-template-columns:minmax(0,1fr)}
+section > h2{font-size:var(--text-2xl);margin-bottom:var(--space-2)}
+section > .intro{color:var(--text-2);max-width:var(--measure);margin-bottom:var(--space-5)}
+.card{background:var(--paper);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-5);box-shadow:var(--shadow-1)}
+.grid-2{display:grid;gap:var(--space-5);grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.card h3{font-size:var(--text-lg);margin-bottom:var(--space-3)}
+.card p{color:var(--text-2);max-width:var(--measure)}
+.card p + p{margin-top:var(--space-3)}
+
+/* facts: label and value pairs */
+.facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--space-2) var(--space-4);margin:var(--space-4) 0 0;font-size:var(--text-sm)}
+.facts dt{color:var(--text-2)}
+.facts dd{margin:0;font-family:var(--font-mono);font-variant-numeric:tabular-nums;color:var(--text)}
+
+/* table */
+.tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--paper);box-shadow:var(--shadow-1)}
+/* the scroller is in the tab order now (three of its columns start off-screen at 375), so it needs a ring of its own */
+.tablewrap:focus-visible{outline:var(--border-focus-width) solid var(--focus);outline-offset:2px}
+table.data{width:100%;font-size:var(--text-sm)}
+table.data caption{text-align:left;padding:var(--space-4) var(--space-4) 0;color:var(--text-2);font-size:var(--text-xs);caption-side:bottom;padding-bottom:var(--space-4)}
+table.data th,table.data td{height:var(--row-h);padding:0 var(--space-4);text-align:left;border-bottom:1px solid var(--hairline);white-space:nowrap}
+table.data tbody tr:last-child td,table.data tbody tr:last-child th{border-bottom:0}
+table.data thead th{background:var(--surface-2);color:var(--text-2);font-size:var(--text-2xs);font-weight:var(--weight-semibold);
+  letter-spacing:var(--tracking-caps);text-transform:uppercase;border-bottom:1px solid var(--border)}
+table.data tbody th{font-weight:var(--weight-medium)}
+table.data th.num,table.data td.num{text-align:right}
+table.data td.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+table.data tr.lead th{box-shadow:inset 3px 0 0 var(--point)}
+.approx{color:var(--text-2)}
+.muted{color:var(--text-3)}
+
+/* method steps: a real sequence, so numbered */
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:var(--space-4);counter-reset:step}
+.steps li{counter-increment:step;display:grid;grid-template-columns:2.25rem minmax(0,1fr);gap:var(--space-4);align-items:start}
+.steps li::before{content:counter(step);display:grid;place-items:center;width:2.25rem;height:2.25rem;border-radius:50%;
+  border:1px solid var(--border-strong);background:var(--paper);font:var(--weight-medium) var(--text-sm)/1 var(--font-mono);color:var(--text-2)}
+.steps h3{font-size:var(--text-lg);margin:var(--space-1) 0 var(--space-2)}
+.steps p{color:var(--text-2);max-width:var(--measure)}
+.steps p + p{margin-top:var(--space-2)}
+.formula{display:block;width:fit-content;max-width:100%;margin-top:var(--space-3);padding:var(--space-2) var(--space-3);overflow-x:auto;
+  background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:var(--text-sm);color:var(--text);white-space:nowrap}
+
+/* commands */
+pre.cmd{margin:var(--space-4) 0 0;padding:var(--space-4);overflow-x:auto;background:var(--surface-2);border:1px solid var(--border);
+  border-radius:var(--radius-md);font-size:var(--text-sm);line-height:1.7;color:var(--text)}
+pre.cmd .c{color:var(--text-3)}
+.checklist{margin:var(--space-4) 0 0;padding-left:1.2em;color:var(--text-2);display:grid;gap:var(--space-2);max-width:var(--measure)}
+.ref{font-size:var(--text-xs);color:var(--text-3)}
+.ref a{color:inherit}
+
+/* ===== footer: back on the band ===== */
+.honest{position:relative;z-index:1;background:var(--band);color:var(--on-band-2);border-top:1px solid var(--band-line);
+  padding:var(--space-10) var(--gutter) var(--space-12);font-size:var(--text-xs)}
+.honest-in{max-width:var(--content-max);margin:0 auto;display:grid;gap:var(--space-6);grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.honest dl,.honest-in > div{margin-block:0}
+.honest dt{font-family:var(--font-sans);font-size:var(--text-2xs);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-caps);
+  text-transform:uppercase;color:var(--on-band);margin-bottom:var(--space-2)}
+.honest dd{margin:0;line-height:var(--leading-relaxed);max-width:var(--measure)}
+.honest a,.honest code{color:var(--on-band)}
+.honest a{text-decoration-color:var(--band-line)}
+
+@media (max-width:639px){
+  /* The band (top bar + plate) may take at most 75% of a 375x812 first screen; with the chart stacked under the
+     headline it took 114%. What the phone keeps is the comparison
+     line — it is the only place outside the table with the excess, the Sharpe pair and the drawdown pair, and at 375
+     three of the table's five columns start off-screen — and what it drops is the chart, whose four lengths are read
+     back as numbers in that same table. The eyebrow collapses to one line; both halves it loses are on the page
+     (the top bar's marker, and the range in the table's own intro). Measured: 600px, 73.9% (2026-09-17). */
+  .plate{padding:var(--space-6) var(--gutter) var(--space-4)}
+  .plate-in{gap:var(--space-5)}
+  .plate h1{margin-top:var(--space-2)}
+  .plate .lede{font-size:var(--text-md);margin-top:var(--space-3)}
+  .plate .rule{display:none}
+  .plate .actions{margin-top:var(--space-4)}
+  .plate .bars{display:none}
+  .plate .diff{display:block;margin-top:var(--space-3);padding-top:var(--space-2)}
+  .plate figcaption{margin-top:var(--space-3);font-size:var(--text-xs)}   /* the source note is a note, not body copy */
+  .eyebrow .long{display:none}
+  .display{font-size:var(--text-3xl)}
+  .bars li{grid-template-columns:minmax(0,1fr) 4.8em;grid-template-areas:"label value" "track track";row-gap:var(--space-1)}
+  .bars .label{grid-area:label}.bars .value{grid-area:value}.bars .track{grid-area:track}
+  .steps li{grid-template-columns:1.75rem minmax(0,1fr);gap:var(--space-3)}
+  .steps li::before{width:1.75rem;height:1.75rem}
+}

@@ -1,0 +1,6 @@
+# Enough to run scripts/make_synthetic.py, both backtest scripts with --synthetic, and scripts/check.py.
+# No yfinance (no price download), no xgboost / shap / polars (the notebook is not run on synthetic data).
+numpy>=1.26
+pandas>=2.2
+pyarrow>=15
+matplotlib>=3.8

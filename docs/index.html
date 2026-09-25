@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>/* appearance boot — runs before any stylesheet so the stored palette and light/dark apply on the first paint */(function(){try{var d=document.documentElement,L=window.localStorage,t=L.getItem('nl-theme'),s=L.getItem('nl-scheme');if(s===null){var o=L.getItem('theme')||L.getItem('qm-theme');if(o==='dark'||o==='light')s=o;}if(t==='paper'||t==='ink')d.setAttribute('data-theme',t);if(s==='dark'||s==='light')d.setAttribute('data-scheme',s);}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Ghost job postings as an equity signal — the course report’s figures, not recomputed here: the data is licensed. Vacancy Signal: a course research pipeline (XGBoost, GMM, walk-forward backtest) that runs end to end on synthetic data.">
+<meta name="theme-color" content="#f7e9e8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#130e15" media="(prefers-color-scheme: dark)">
+<title>Vacancy Signal</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..600;1,9..144,400&family=Inter:wght@400..600&family=Space+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="design-tokens.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="./" aria-label="Vacancy Signal home">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true" focusable="false"><rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="currentColor" stroke-width="2"/><rect x="14" y="6" width="4" height="4" rx="1" fill="var(--point)"/><path d="M7 12.5h10M7 16h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 9h3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 2.4"/></svg>
+    <b>Vacancy Signal</b><span>Ghost job postings as an equity signal — the course report’s figures, not recomputed here: the data is licensed.</span>
+  </a>
+  <span class="pill" title="The figures on this page are quoted from the course report. The job-posting data is licensed and not in this repository.">Course report<span class="long"> · licensed data</span></span>
+  <button class="btn btn-ghost btn-icon" id="theme" aria-label="Dark mode" aria-pressed="false" title="Dark mode"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg></button>
+  <button type="button" class="btn btn-ghost btn-icon" id="nl-settings-button" aria-haspopup="dialog" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10.34 5.10L10.58 2.51L13.42 2.51L13.66 5.10A7.1 7.1 0 0 1 15.71 5.95L17.71 4.28L19.72 6.29L18.05 8.29A7.1 7.1 0 0 1 18.90 10.34L21.49 10.58L21.49 13.42L18.90 13.66A7.1 7.1 0 0 1 18.05 15.71L19.72 17.71L17.71 19.72L15.71 18.05A7.1 7.1 0 0 1 13.66 18.90L13.42 21.49L10.58 21.49L10.34 18.90A7.1 7.1 0 0 1 8.29 18.05L6.29 19.72L4.28 17.71L5.95 15.71A7.1 7.1 0 0 1 5.10 13.66L2.51 13.42L2.51 10.58L5.10 10.34A7.1 7.1 0 0 1 5.95 8.29L4.28 6.29L6.29 4.28L8.29 5.95A7.1 7.1 0 0 1 10.34 5.10Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+  <a class="btn btn-ghost gh" href="https://github.com/NickkkLian/Ghost-Job-Detection-And-Trading-Signal" rel="noopener">GitHub</a>
+</header>
+
+<main id="main">
+<section class="plate" aria-labelledby="result-h">
+  <div class="plate-in">
+    <div>
+      <span class="eyebrow"><span class="long">Course report · </span>Walk-forward backtest · 2019–2026<span class="long"> · 20 bps costs</span></span>
+      <h1 id="result-h" class="display">Ghost Barbell returned +216.9% against SPY’s +180.1%</h1>
+      <p class="lede">The Ghost Barbell holds the firms that post the most without hiring and the firms that hire the most per posting, rebalanced quarterly — using only scores published at least 45 days after the quarter closed.</p>
+      <div class="rule" aria-hidden="true"></div>
+      <div class="actions">
+        <a class="btn btn-primary" href="https://github.com/NickkkLian/Ghost-Job-Detection-And-Trading-Signal/blob/main/Ghost_Job_Report.pdf" rel="noopener">Read the report (PDF)</a>
+        <a href="#run">Run the pipeline without the data</a>
+      </div>
+    </div>
+    <figure>
+      <ul class="bars" style="--zero:9.25%" aria-label="Total return, 2019 to 2026, from the course report">
+        <li class="lead"><span class="label">Ghost Barbell</span><span class="track" aria-hidden="true"><span class="bar point" style="left:9.25%;width:90.75%"></span></span><span class="value">+216.9%</span></li>
+        <li><span class="label">SPY (benchmark)</span><span class="track" aria-hidden="true"><span class="bar second" style="left:9.25%;width:75.36%"></span></span><span class="value">+180.1%</span></li>
+        <li><span class="label">Universe, equal weight</span><span class="track" aria-hidden="true"><span class="bar third" style="left:9.25%;width:58.33%"></span></span><span class="value">+139.4%</span></li>
+        <li><span class="label">Long / Short</span><span class="track" aria-hidden="true"><span class="bar hatch" style="left:0;width:9.25%"></span></span><span class="value">−22.1%</span></li>
+      </ul>
+      <p class="diff" id="diff">Ghost Barbell against SPY: <b>+36.8 pp</b> total return · Sharpe 0.84 vs 0.82 · worst drawdown −37.4% vs −33.7%</p>
+      <figcaption class="caption">From the course report (Ghost_Job_Report.pdf, p. 4). The job-posting data is licensed from Revelio Labs and is not in this repository, so none of these figures were recomputed here.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<div class="content">
+  <section aria-labelledby="perf-h">
+    <h2 id="perf-h">Strategy performance</h2>
+    <p class="intro">Each leg holds the most or least ghost-like 10% of scored firms, rebalanced quarterly with a 45-day publication lag and 20 bps transaction costs, from 2019 to 2026. In the table, <b>≈</b> marks a figure read off the report’s chart and <b>—</b> means the report gives no figure.</p>
+    <div class="tablewrap" tabindex="0" role="region" aria-label="Strategy performance table, scrolls sideways">
+      <table class="data" id="perf">
+        <caption>Report p. 4, Table 2 (legs of 10%; 5% and 25% were also tested). The backtest script prints all four columns for any score file you give it.</caption>
+        <thead><tr><th scope="col">Strategy</th><th scope="col" class="num">Total return</th><th scope="col" class="num">CAGR</th><th scope="col" class="num">Sharpe</th><th scope="col" class="num">Max drawdown</th></tr></thead>
+        <tbody>
+          <tr class="lead" data-row="barbell"><th scope="row">Ghost Barbell</th><td class="num" data-total="216.9">+216.9%</td><td class="num">+17.1%</td><td class="num" data-sharpe="0.84">0.84</td><td class="num" data-dd="-37.4">−37.4%</td></tr>
+          <tr><th scope="row">Long high ghost</th><td class="num approx">≈ +220%</td><td class="num muted">—</td><td class="num muted">—</td><td class="num muted">—</td></tr>
+          <tr><th scope="row">Long low ghost</th><td class="num approx">≈ +120%</td><td class="num muted">—</td><td class="num muted">—</td><td class="num muted">—</td></tr>
+          <tr data-row="spy"><th scope="row">SPY (benchmark)</th><td class="num" data-total="180.1">+180.1%</td><td class="num">+15.2%</td><td class="num" data-sharpe="0.82">0.82</td><td class="num" data-dd="-33.7">−33.7%</td></tr>
+          <tr><th scope="row">Universe, equal weight</th><td class="num">+139.4%</td><td class="num">+12.7%</td><td class="num">0.64</td><td class="num">−39.4%</td></tr>
+          <tr><th scope="row">Long / Short</th><td class="num">−22.1%</td><td class="num">−3.4%</td><td class="num">−0.32</td><td class="num">−43.4%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="method-h">
+    <h2 id="method-h">How the score is built</h2>
+    <p class="intro">Five steps, in the order the notebook runs them. The numbers are the report’s; the code for steps 1–4 is <code>notebooks/Ghost_Job_Pipeline_v2.ipynb</code>, for step 5 the two scripts in <code>scripts/</code>.</p>
+    <ol class="steps">
+      <li><div><h3>Predict next-quarter hiring</h3>
+        <p>An XGBoost regressor predicts each firm-quarter’s hires in the following quarter from 14 features: ten about how the firm posts (volume, how long postings stay up, share never removed, salary disclosure…) and four about the company (headcount, its log and four-quarter growth, industry).</p>
+        <p class="ref">Test R² 0.486 against Ridge 0.279; train 0.947, validation 0.549 (README); MAE 3.1 · report p. 2</p></div></li>
+      <li><div><h3>Flag ghost posters</h3>
+        <p>A firm whose predicted fill rate — predicted hires per posting — falls below the 21st percentile is flagged, following Ng (2024).</p>
+        <p class="ref">Threshold 0.2898 (README) · 43 of 204 out-of-sample firms, 21.1% · report p. 2</p></div></li>
+      <li><div><h3>Score every firm-quarter</h3>
+        <p>The report ranks firms each quarter, so the score measures how a firm compares with the rest of the market that quarter rather than its size.</p>
+        <code class="formula">GhostScore(i, t) = 1 − Rank<sub>t</sub>[PredFillRate(i, t)] / N<sub>t</sub></code>
+        <p class="ref">Report p. 2, where the score carries the report’s own name. The notebook’s <code>ghost_scores_fq.parquet</code> computes a related score, 1 − predicted hires ÷ the firm’s own median prediction; the backtest reads whichever score file it is given.</p></div></li>
+      <li><div><h3>Check the structure without labels</h3>
+        <p>A Gaussian mixture on the same 14 features, with no ghost labels, separates firms that post like ghosts from firms that hire.</p>
+        <p class="ref">7 components (BIC −1,508) · cluster 0: 1.6% ghost rate; clusters 3 and 4: 44.2% and 50.0% (README; the report rounds to 44% and 50%) · report pp. 2, 7</p></div></li>
+      <li><div><h3>Backtest without looking ahead</h3>
+        <p>On each quarterly rebalance only scores published at least 45 days after their quarter ended are used; daily returns are capped at ±25%, and illiquid or extremely volatile tickers are dropped before trading.</p>
+        <p class="ref">2019–2026 · 10% legs · 20 bps · report pp. 2–3 · return cap and liquidity and volatility filters: README</p></div></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="data-h">
+    <h2 id="data-h">What it was built on</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Revelio Labs job postings</h3>
+        <p>Licensed workforce data: individual postings, positions and company references. It is not in this repository and may not be redistributed; <code>data/README.md</code> lists what the notebook reads and how researchers can get access.</p>
+        <dl class="facts">
+          <dt>Postings</dt><dd>310,821</dd>
+          <dt>US public firms</dt><dd>2,919</dd>
+          <dt>Years</dt><dd>2009–2024</dd>
+          <dt>Firms with ≥ 3 postings a quarter</dt><dd>1,017</dd>
+        </dl>
+        <p class="ref" style="margin-top:var(--space-3)">Report p. 1</p>
+      </div>
+      <div class="card">
+        <h3>What drives the prediction</h3>
+        <p>Headcount features carry the most weight in the model’s explanations. Among the posting features, the share of postings never taken down is the clearest ghost signal in the report.</p>
+        <dl class="facts">
+          <dt><code>headcount</code></dt><dd>4.451</dd>
+          <dt><code>log_headcount</code></dt><dd>2.152</dd>
+          <dt><code>headcount_growth_4q</code></dt><dd>0.670</dd>
+        </dl>
+        <p class="ref" style="margin-top:var(--space-3)">Mean |SHAP|, top three (README) · still_active_rate: report p. 3</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="run" aria-labelledby="run-h">
+    <h2 id="run-h">Run the pipeline without the data</h2>
+    <p class="intro">No licence and no network: a generator writes made-up scores and prices for 200 firms (tickers <code>SYN001</code>…, benchmark <code>SYNMKT</code>), and both backtest scripts read them with <code>--synthetic</code>. Scores and returns are independent by construction, so the numbers these runs print are not findings — they show that the code runs.</p>
+<pre class="cmd"><code>pip install -r requirements-synthetic.txt
+python scripts/make_synthetic.py
+python scripts/ghost_backtest_v2.py --synthetic
+python scripts/check.py</code></pre>
+    <ul class="checklist">
+      <li><code>check.py</code> runs both scripts on fresh synthetic data and checks their outputs, and that a score file missing a column is refused by name.</li>
+      <li>It also tests the no-lookahead promise: on data where each quarter’s returns follow scores that are only published later, a backtest that respects the 45-day lag must not profit from them, and one allowed to read scores early must.</li>
+      <li><code>check.py --break</code> removes a column and loosens the backtester’s time gate on purpose; both must turn the checks red.</li>
+    </ul>
+  </section>
+</div>
+</main>
+
+<footer class="honest">
+  <dl class="honest-in">
+    <div><dt>About this page</dt>
+    <dd>A course project for COMM 486I (Applied AI in Finance) at UBC Sauder by Nilabh Agrawal, Carter Jaquette and Nick Lian. Every figure is quoted from the report or the README, with its source beside it; none was recomputed, because the data is licensed from Revelio Labs.</dd></div>
+    <div><dt>Not verified here</dt>
+    <dd>The reported results themselves (no access to the data in this repository) · the notebook on synthetic data (only the two backtest scripts run on it) · price downloads from Yahoo Finance (the checks never use the network) · transaction costs beyond the flat 20 bps and short borrow fees.</dd></div>
+    <div><dt>Source</dt>
+    <dd><a href="https://github.com/NickkkLian/Ghost-Job-Detection-And-Trading-Signal" rel="noopener">github.com/NickkkLian/Ghost-Job-Detection-And-Trading-Signal</a> · MIT · report and slides in the repository root</dd></div>
+  </dl>
+</footer>
+
+<script src="appearance.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
