@@ -60,6 +60,9 @@ h1,h2,h3{margin:0;font-family:var(--font-display);font-weight:var(--display-weig
 .topbar .btn{color:var(--on-band)}
 /* on the band a primary action is inverted: --accent can be the band colour itself */
 .plate .btn-primary{background:var(--on-band);border-color:var(--on-band);color:var(--band)}
+/* a disabled primary on the band keeps the disabled look: the band rule above has the same weight as .btn[disabled]
+   and comes later, so without this it would paint a disabled button like a live one (hover too) */
+.plate .btn.btn-primary[disabled]{color:var(--text-disabled);background:var(--neutral-tint);border-color:var(--border)}
 @media (hover:hover) and (pointer:fine){
   .btn:hover{background:var(--surface-hover)}
   .topbar .btn-ghost:hover{background:var(--band-line)}
