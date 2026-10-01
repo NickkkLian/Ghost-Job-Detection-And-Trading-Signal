@@ -1,16 +1,20 @@
 # Vacancy Signal
 
-![Vacancy Signal](.github/header.png)
-
 **Ghost job postings as an equity signal — the course report's figures, not recomputed here: the data is licensed.**
+
+**What the report's backtest found (2019–2026):** a long/short on the ghost score lost 22.1%. Holding both tails long returned +216.9% against SPY's +180.1%, at about the same Sharpe (0.84 vs 0.82) and with a deeper worst drawdown (−37.4% vs −33.7%).
+
+**Try it:** [open the results page](https://nickkklian.github.io/Ghost-Job-Detection-And-Trading-Signal/), or run the pipeline on synthetic data with the four commands under [Run it in 60 seconds](#run-it-in-60-seconds-synthetic-data-no-licence-no-network).
+
+[![Vacancy Signal results page: the long/short and both-tails results from the report, the return bars and the strategy table](docs/screenshot-results.png)](https://nickkklian.github.io/Ghost-Job-Detection-And-Trading-Signal/)
+
+![Vacancy Signal](.github/header.png)
 
 *Ghost Job Detection: A Labor Market Mispricing Signal* — course research by
 
 **Nilabh Agrawal, Carter Jaquette, and Nick Lian**  
 Sauder School of Business, University of British Columbia  
 COMM 486I — Applied AI in Finance
-
-[![Vacancy Signal results page: the Ghost Barbell and SPY returns from the report, and the strategy table](docs/screenshot-results.png)](https://nickkklian.github.io/Ghost-Job-Detection-And-Trading-Signal/)
 
 **[Open the results page →](https://nickkklian.github.io/Ghost-Job-Detection-And-Trading-Signal/)** · [Report (PDF)](Ghost_Job_Report.pdf) · [Slides (PPTX)](Ghost_Job_Final_Presentation.pptx) · [Notebook](notebooks/Ghost_Job_Pipeline_v2.ipynb)
 
@@ -64,8 +68,13 @@ python scripts/check.py
 Ghost job postings — listings kept active by firms with no genuine intent to hire — are
 a measurable but under-exploited signal in public equity markets. We construct a
 **Ghost Job Intensity Score** from 310,821 Revelio Labs job postings spanning 2,919 US
-public firms over 2009–2024 and show that cross-sectional variation in ghosting behaviour
-predicts meaningful return dispersion.
+public firms over 2009–2024 and backtest whether cross-sectional variation in ghosting
+behaviour shows up in returns. In the report's backtest it does not make a tradeable
+long/short: long low-ghost, short high-ghost lost 22.1% over 2019–2026, while holding both
+tails long roughly matched SPY on risk-adjusted return (see [Key Results](#key-results)).
+The model's two strongest features are `headcount` and `log_headcount`, so part of what
+the score ranks may be firm size; the report ranks firms within each quarter to absorb
+size, and names a factor-neutral construction as a next step, not something it ran.
 
 **Pipeline summary:**
 
@@ -90,12 +99,18 @@ predicts meaningful return dispersion.
 
 | Strategy | Total Return | CAGR | Sharpe | Max Drawdown |
 |---|---|---|---|---|
-| **Ghost Barbell** | **+216.9%** | **+17.1%** | **0.84** | **−37.4%** |
+| Long / Short | −22.1% | −3.4% | −0.32 | −43.4% |
+| Ghost Barbell (both tails long) | +216.9% | +17.1% | 0.84 | −37.4% |
 | Long High Ghost | ~220% | — | — | — |
 | Long Low Ghost | ~120% | — | — | — |
 | SPY (benchmark) | +180.1% | +15.2% | 0.82 | −33.7% |
 | Universe EW | +139.4% | +12.7% | 0.64 | −39.4% |
-| Long / Short | −22.1% | −3.4% | −0.32 | −43.4% |
+
+How to read it: the long/short (long low-ghost, short high-ghost) lost money. The Ghost
+Barbell's extra 36.8 points of total return over SPY came with nearly the same Sharpe
+(0.84 vs 0.82) and a deeper worst drawdown (−37.4% vs −33.7%), so on risk it roughly
+matched the index. The high-ghost long (~220%) beat the low-ghost long (~120%), which is
+why shorting high-ghost firms lost. All figures are the report's (p. 4, Table 2).
 
 ### Model Performance
 
