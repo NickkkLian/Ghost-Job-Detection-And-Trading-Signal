@@ -573,10 +573,13 @@ def run_backtest(ghost_df:         pd.DataFrame,
          ghost scores with available_date <= today (no lookahead).
       2. Mark-to-market the portfolio using that day's stock returns.
 
-    v2: daily returns are winsorised at ±max_daily_ret before any
+    v2: strategy daily returns are winsorised at ±max_daily_ret before
     portfolio calculation.  This eliminates single-day data artefacts
     (bad adjusted prices from splits/mergers) without throwing away the
     ticker entirely.
+
+    The benchmark is a separate buy-and-hold price ratio over this window,
+    without the score lag, rebalancing costs or return winsorisation.
 
     Transaction costs are applied at rebalance as a one-way drag:
         cost = (turnover / 2) × (tc_bps / 10_000)
@@ -594,6 +597,12 @@ def run_backtest(ghost_df:         pd.DataFrame,
             f"No price data between {start_date} and {end_date}. "
             "Check that yfinance returned data for your tickers."
         )
+
+    # Buy-and-hold starts at the window's first close, independently of score
+    # publication/rebalancing. Carry gaps forward, never backfill a future price.
+    if benchmark_ticker not in prices or pd.isna(prices[benchmark_ticker].iloc[0]):
+        raise ValueError(f"Benchmark {benchmark_ticker} needs a price at the start of the backtest window.")
+    benchmark_nav = prices[benchmark_ticker].ffill() / prices[benchmark_ticker].iloc[0]
 
     daily_rets = prices.pct_change().fillna(0)
 
@@ -626,7 +635,7 @@ def run_backtest(ghost_df:         pd.DataFrame,
     rebal_signal_dates = set(score_panel.index)
 
     # ── State initialisation ──────────────────────────────────────────────
-    strategies      = list(STRATEGY_LABELS.keys())
+    strategies      = [s for s in STRATEGY_LABELS if s != "benchmark"]
     nav_values      = {s: [1.0] for s in strategies}
     nav_dates       = [prices.index[0]]
     cur_weights     = {s: pd.Series(dtype=float) for s in strategies}
@@ -684,8 +693,8 @@ def run_backtest(ghost_df:         pd.DataFrame,
         nav_dates.append(date)
 
     nav = pd.DataFrame(nav_values, index=nav_dates)
-    nav.columns = [benchmark_label(benchmark_ticker) if s == "benchmark" else STRATEGY_LABELS[s]
-                   for s in strategies]
+    nav.columns = [STRATEGY_LABELS[s] for s in strategies]
+    nav[benchmark_label(benchmark_ticker)] = benchmark_nav
 
     # Only drop the Threshold strategy if it was never populated
     # (happens when the ghost file has no is_ghost column).
@@ -703,6 +712,23 @@ def run_backtest(ghost_df:         pd.DataFrame,
 # ─────────────────────────────────────────────────────────────────────────────
 # 5.  PERFORMANCE METRICS
 # ─────────────────────────────────────────────────────────────────────────────
+
+def backtest_verdict(nav: pd.DataFrame, synthetic: bool = False) -> str:
+    """Describe the observed long/short result without claiming a working signal."""
+    total_return = nav["Long / Short"].iloc[-1] / nav["Long / Short"].iloc[0] - 1
+    if total_return < 0:
+        finding = "lost money"
+        conclusion = "this does not support the signal"
+    elif total_return > 0:
+        finding = "gained money"
+        conclusion = "a gain in one backtest does not establish a signal"
+    else:
+        finding = "broke even"
+        conclusion = "this does not support the signal"
+    limit = ("These are made-up data, not evidence of a working signal." if synthetic else
+             "A single backtest is not evidence of a working signal.")
+    return f"VERDICT: The long/short {finding} ({total_return:+.1%}); {conclusion}. {limit}"
+
 
 def performance_metrics(nav: pd.DataFrame) -> pd.DataFrame:
     """
@@ -883,6 +909,7 @@ def main(ghost_file:           str   = DEFAULTS["ghost_file"],
     print(f"  Rebalance freq    : {rebal_freq}")
     print(f"  Transaction cost  : {tc_bps} bps one-way")
     print(f"  Benchmark         : {benchmark_ticker}")
+    print("  Benchmark method  : buy-and-hold from the first close in the window; no rebalance costs or return clipping")
     print(f"  Return winsor cap : ±{max_daily_ret*100:.0f}%/day")
     print(f"  Vol filter        : drop if ann. vol > {vol_filter_threshold*100:.0f}%")
     print(f"  Min ADV           : ${min_adv_usd/1e6:.1f}M USD")
@@ -943,6 +970,7 @@ def main(ghost_file:           str   = DEFAULTS["ghost_file"],
     print(f"\n{div}")
     print(metrics.to_string())
     print(div)
+    print("\n  " + backtest_verdict(nav, synthetic=bool(synthetic_dir)))
 
     # ── Important caveats ─────────────────────────────────────────────────
     print("\n⚠  IMPORTANT CAVEATS")

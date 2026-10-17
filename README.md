@@ -4,11 +4,13 @@
 
 **What the report's backtest found (2019–2026):** a long/short on the ghost score lost 22.1%. Holding both tails long returned +216.9% against SPY's +180.1%, at about the same Sharpe (0.84 vs 0.82) and with a deeper worst drawdown (−37.4% vs −33.7%).
 
+**Leak control, runnable here:** on planted synthetic data, high-ghost minus low-ghost total return is **+471.8 percentage points when leaking future scores, versus +5.1 pp with the 45-day publication lag**. This checks that the pipeline catches lookahead; it is not evidence of a working signal. Run `python scripts/check.py`.
+
 **Try it:** [open the results page](https://nickkklian.github.io/Ghost-Job-Detection-And-Trading-Signal/), or run the pipeline on synthetic data with the four commands under [Run it in 60 seconds](#run-it-in-60-seconds-synthetic-data-no-licence-no-network).
 
-[![Vacancy Signal results page: the long/short and both-tails results from the report, the return bars and the strategy table](docs/screenshot-results.png)](https://nickkklian.github.io/Ghost-Job-Detection-And-Trading-Signal/)
-
 ![Vacancy Signal](.github/header.png)
+
+[![Vacancy Signal results page: the long/short and both-tails results from the report, the return bars and the strategy table](docs/screenshot-results.png)](https://nickkklian.github.io/Ghost-Job-Detection-And-Trading-Signal/)
 
 *Ghost Job Detection: A Labor Market Mispricing Signal* — course research by
 
@@ -38,7 +40,10 @@ python scripts/check.py
   `manifest.json`. Scores and returns are independent by construction, so **the numbers a synthetic backtest prints
   are not findings** — they show that the pipeline runs.
 - `ghost_backtest_v2.py --synthetic` reads those files instead of downloading prices and writes
-  `backtest_output/` (daily NAV, metrics, the four-panel chart). `ghost_concentration_compare_3.py --synthetic` does the
+  `backtest_output/` (daily NAV, metrics, the four-panel chart) and prints a plain-words long/short verdict.
+  The buy-and-hold benchmark uses the first and last available closes within the stated window, with no
+  score-publication delay, rebalance costs or return clipping; gaps carry the last known price forward, and a
+  missing entry price is refused. `ghost_concentration_compare_3.py --synthetic` does the
   same for the 5% / 10% / 25% sweep.
 - `check.py` runs both scripts on fresh synthetic data in a temporary folder and tests what the backtester promises
   (details in [Checks](#checks)); `python scripts/check.py --break` breaks the data and the time gate on purpose and
@@ -370,6 +375,11 @@ Both scripts accept the same arguments; the backtest takes one `--concentration`
    the 45-day lag the high-ghost and low-ghost longs must finish within 25 percentage points of each other; with a lag of
    −100 days (reading scores before they exist) the gap must exceed 200 points. The second run is the control that
    shows the test can see a leak.
+6. The benchmark NAV matches its price ratio over the entire stated window, rather than starting at the first
+   score rebalance. A separate fixture checks window boundaries, forward-only gap handling, no return clipping
+   or rebalance costs, and refusal of a missing benchmark entry price.
+7. The script prints an honest verdict on synthetic data; loss, gain and break-even cases are also checked, with
+   the reminder that a single backtest is not evidence of a working signal.
 
 `python scripts/check.py --break` removes the `ghost_score` column from the synthetic scores (check 2 must fail) and, in
 a copy of the scripts, lets the backtester read scores 150 days early (check 5 must fail); it exits 0 only when both

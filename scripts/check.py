@@ -23,6 +23,10 @@ Checks
      end within 25 percentage points of each other; run with a lag of -100 days
      (reading scores before they exist) the gap must exceed 200 points. The second
      run is the control that proves the test can see a leak.
+  6. Benchmark NAV matches the price ratio over the whole stated window.
+  7. Synthetic command-line output gives an honest plain-words verdict.
+  8. Benchmark gaps use past prices only; missing entry prices are refused.
+  9. Loss, gain and break-even verdicts do not claim a working signal.
 
 Breaks (--break)
   A. the synthetic score file loses its ghost_score column  → check 2 must fail
@@ -30,6 +34,8 @@ Breaks (--break)
 """
 
 import argparse
+import contextlib
+import io
 import os
 import shutil
 import subprocess
@@ -37,7 +43,10 @@ import sys
 import tempfile
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
+
+import ghost_backtest_v2 as backtest
 
 HERE = Path(__file__).resolve().parent
 ENV = dict(os.environ, MPLBACKEND="Agg", PYTHONDONTWRITEBYTECODE="1")
@@ -130,6 +139,62 @@ def check_no_lookahead(scripts: Path, work: Path) -> tuple[bool, str]:
                 f"{gaps['-100']:+.1f} pp when reading scores 100 days early (control, must exceed +200)")
 
 
+def check_benchmark(scripts: Path, work: Path) -> tuple[bool, str]:
+    data = work / "random"
+    prices = pd.read_parquet(data / "prices.parquet")
+    prices = prices[prices["ticker"] == "SYNMKT"].set_index("date")["close"].sort_index()
+    nav = pd.read_csv(work / "backtest" / "backtest_nav.csv", index_col=0, parse_dates=True)
+    expected = prices.loc[nav.index] / prices.loc[nav.index[0]]
+    actual = nav["Buy & Hold (SYNMKT)"]
+    ok = np.allclose(actual, expected, rtol=1e-10, atol=1e-10)
+    return ok, (f"SYNMKT {nav.index[0].date()} to {nav.index[-1].date()}: "
+                f"{(actual.iloc[-1] - 1)*100:+.1f}% vs price-ratio reference {(expected.iloc[-1] - 1)*100:+.1f}%")
+
+
+def check_verdict(scripts: Path, work: Path) -> tuple[bool, str]:
+    r = run(scripts, work, "ghost_backtest_v2.py", "--synthetic", "--data_dir", str(work / "random"),
+            "--output_dir", str(work / "verdict"))
+    ok = (r.returncode == 0 and "VERDICT:" in r.stdout and "The long/short lost money" in r.stdout
+          and "does not support the signal" in r.stdout and "made-up data" in r.stdout
+          and "not evidence of a working signal" in r.stdout)
+    return ok, next((line.strip() for line in r.stdout.splitlines() if "VERDICT:" in line),
+                    f"no plain-words verdict; exit {r.returncode}")
+
+
+def check_benchmark_edges() -> tuple[bool, str]:
+    dates = pd.to_datetime(["2020-12-31", "2021-01-01", "2021-01-04", "2021-03-31", "2021-04-01", "2021-04-02"])
+    prices = pd.DataFrame({"SYN001": 100., "SYN002": 100., "SYNMKT": [50., 100., 120., np.nan, 180., 200.]}, index=dates)
+    scores = pd.DataFrame({"ticker": ["SYN001", "SYN002"], "ghost_score": [0., 1.],
+                           "quarter_end": pd.Timestamp("2020-12-31"), "available_date": pd.Timestamp("2021-02-14")})
+    def run(px):
+        with contextlib.redirect_stdout(io.StringIO()):
+            return backtest.run_backtest(scores, px, "2021-01-01", "2021-04-01", benchmark_ticker="SYNMKT")
+    nav = run(prices)
+    ok = np.allclose(nav["Buy & Hold (SYNMKT)"], [1., 1.2, 1.2, 1.8])
+    for bad in (prices.drop(columns="SYNMKT"), prices.assign(SYNMKT=prices["SYNMKT"].mask(prices.index == dates[1]))):
+        try:
+            run(bad)
+        except ValueError as error:
+            ok &= "benchmark" in str(error).lower() and "SYNMKT" in str(error)
+        else:
+            ok = False
+    return bool(ok), "window cropped; gaps carried forward only; no rebalance costs or return clipping; missing entry price refused"
+
+
+def check_verdict_cases() -> tuple[bool, str]:
+    verdict = getattr(backtest, "backtest_verdict", None)
+    if verdict is None:
+        return False, "backtest_verdict is missing"
+    cases = [(-0.1, "lost money"), (0.1, "gained money"), (0., "broke even")]
+    for ret, words in cases:
+        nav = pd.DataFrame({"Long / Short": [1., 1. + ret]})
+        for synthetic in (False, True):
+            text = verdict(nav, synthetic)
+            if words not in text or "not evidence of a working signal" not in text or (synthetic and "made-up data" not in text):
+                return False, f"incorrect verdict for return {ret}, synthetic={synthetic}: {text}"
+    return True, "loss, gain and break-even verdicts stay cautious on synthetic and real inputs (6 cases)"
+
+
 def run_checks(scripts: Path, work: Path, data_hook=None) -> list[tuple[str, bool, str]]:
     results = [("1 synthetic data is written and marked synthetic", *check_generate(scripts, work))]
     data = work / "random"
@@ -139,6 +204,11 @@ def run_checks(scripts: Path, work: Path, data_hook=None) -> list[tuple[str, boo
     results.append(("3 concentration sweep runs on synthetic data", *check_sweep(scripts, work, data)))
     results.append(("4 a score file without ghost_score is refused by name", *check_refuses_missing_column(scripts, work)))
     results.append(("5 no lookahead: the publication lag keeps the planted future scores out", *check_no_lookahead(scripts, work)))
+    if not data_hook:
+        results.append(("6 benchmark buys and holds over the stated window", *check_benchmark(scripts, work)))
+        results.append(("7 synthetic output gives an honest plain-words verdict", *check_verdict(scripts, work)))
+        results.append(("8 benchmark handles missing prices without looking ahead", *check_benchmark_edges()))
+        results.append(("9 verdict follows the actual return", *check_verdict_cases()))
     return results
 
 
