@@ -1,0 +1,15 @@
+/* Fluid layout unit, relative to a 1230px reference viewport. */
+:root { --suite-screen-unit: clamp(16px, calc(100vw * 16 / 1230), calc(16px * 1920 / 1230)); --suite-text-min: calc(var(--suite-screen-unit) * .75); }
+html[data-suite-scale="fluid"] { --suite-px: calc(var(--suite-screen-unit) / 16); font-size: var(--suite-screen-unit); }
+@media (min-width:1230px) { body { max-width:calc(1215 * var(--suite-px, 1px)); margin-inline:auto; } }
+.sr-only, .grading-note { width: 1px; height: 1px; }
+sub, sup { font-size: max(var(--suite-text-min), .75em); }
+.topbar svg[width="24"] { width: calc(24 * var(--suite-px)); height: calc(24 * var(--suite-px)); }
+.topbar svg[width="18"] { width: calc(18 * var(--suite-px)); height: calc(18 * var(--suite-px)); }
+html[data-suite-scale] .nl-pick, html[data-suite-scale] .nl-swatch, html[data-suite-scale] .nl-seg,
+html[data-suite-scale] .nl-dialog, html[data-suite-scale] .nl-dialog .nl-done { border-width: calc(1 * var(--suite-px)); }
+html[data-suite-scale] .nl-swatch { width: calc(46 * var(--suite-px)); height: calc(26 * var(--suite-px)); }
+html[data-suite-scale] .nl-seg { padding: calc(2 * var(--suite-px)); gap: calc(2 * var(--suite-px)); }
+html[data-suite-scale] .nl-seg label { min-width: calc(72 * var(--suite-px)); height: calc(28 * var(--suite-px)); }
+html[data-suite-scale] .nl-dialog { width: min(calc(460 * var(--suite-px)), calc(100vw - 2 * var(--gutter))); }
+html[data-suite-scale] .nl-dialog .nl-section { border-top-width: calc(1 * var(--suite-px)); }
