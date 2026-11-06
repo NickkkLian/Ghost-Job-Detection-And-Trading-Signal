@@ -44,7 +44,7 @@ h1,h2,h3{margin:0;font-family:var(--font-display);font-weight:var(--display-weig
 .brand svg{flex:none}
 .brand b{font-family:var(--font-display);font-weight:var(--display-weight);font-variation-settings:"opsz" var(--opsz-title);
   font-size:var(--text-xl);letter-spacing:-0.014em;white-space:nowrap;flex:none}
-.brand span{color:var(--on-band-2);font-size:var(--text-xs);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.brand span{color:var(--on-band-2);font-size:var(--text-xs);min-width:0}
 .topbar .pill{display:inline-flex;align-items:center;gap:var(--space-1);height:calc(22 * var(--suite-px, 1px));padding:0 var(--space-2);border-radius:var(--radius-full);
   white-space:nowrap;color:var(--on-band-2);font:var(--weight-regular) var(--text-2xs)/1 var(--font-mono);border:calc(1 * var(--suite-px, 1px)) solid var(--band-line);
   margin-inline-end:auto;flex:none}
@@ -72,7 +72,7 @@ h1,h2,h3{margin:0;font-family:var(--font-display);font-weight:var(--display-weig
 }
 @media (prefers-reduced-motion:reduce){.btn:active{transform:none}}
 @media (pointer:coarse){.btn{min-height:var(--touch-min)}.btn-icon{min-width:var(--touch-min)}}
-/* top bar by width: controls never shrink, only the tagline truncates; the compact tier keeps mark, name, pill, Settings */
+/* Top bar by width: controls never shrink; the compact tier keeps mark, name, pill, Settings. */
 @media (max-width:767px){.topbar #theme,.topbar .gh,.topbar .brand span,.topbar .pill .long{display:none}.topbar .brand b{font-size:var(--text-lg)}}
 /* under 420px the wordmark, the marker and the settings button no longer fit at the normal rhythm (the wordmark was
    clipped by 2px at 360 with a coarse pointer), so the bar's gap and side padding tighten rather than the type */
