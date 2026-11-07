@@ -5,6 +5,8 @@
      <html data-theme="paper|ink">           another palette
      <html data-scheme="light|dark">         forced light or dark
    Defaults write no attribute: an attribute present means the person chose something.
+   Set <html data-palette="false"> before boot to keep the authored palette and omit its Settings group.
+   This also ignores stored palette choices and prevents Appearance.set from changing or saving the palette.
    The choice is stored in localStorage (nl-theme, nl-scheme). The inline boot snippet at the top of <head> applies it
    before the first paint, so there is no flash; this file keeps everything in sync afterwards.
 
@@ -26,16 +28,19 @@
   // palette names are strings like the others (v4: Water lilies / Morning light / Dusk; the codes stay plaster|paper|ink)
   var SCHEMES = ['system', 'light', 'dark'];
   var STRINGS = {
-    en: { title: 'Settings', theme: 'Theme', appearance: 'Appearance', system: 'System', light: 'Light', dark: 'Dark',
+    en: { schemeCaption: 'Saved in this browser only. System is the default.',
+          title: 'Settings', theme: 'Theme', appearance: 'Appearance', system: 'System', light: 'Light', dark: 'Dark',
           shortcuts: 'Single-key shortcuts', on: 'On', off: 'Off',
           plaster: 'Water lilies', paper: 'Morning light', ink: 'Dusk',
           caption: 'Saved in this browser only. Water lilies and System are the defaults.', done: 'Done' },
-    zh: { title: '设置', theme: '配色', appearance: '明暗', system: '跟随系统', light: '浅色', dark: '深色',
+    zh: { schemeCaption: '只保存在这个浏览器里。「跟随系统」是默认值。',
+          title: '设置', theme: '配色', appearance: '明暗', system: '跟随系统', light: '浅色', dark: '深色',
           shortcuts: '单键快捷键', on: '开', off: '关',
           plaster: '睡莲', paper: '晨光', ink: '暮色',
           caption: '只保存在这个浏览器里。「睡莲」与「跟随系统」是默认值。', done: '完成' }
   };
   var doc = document, html = doc.documentElement;
+  var paletteEnabled = html.getAttribute('data-palette') !== 'false';
   var toggles = [], uid = 0;
 
   function get() {
@@ -76,9 +81,11 @@
   function set(next) {
     var cur = get();
     var t = next && next.theme ? next.theme : cur.theme, s = next && next.scheme ? next.scheme : cur.scheme;
-    if (t === 'plaster') html.removeAttribute('data-theme'); else html.setAttribute('data-theme', t);
+    if (paletteEnabled) {
+      if (t === 'plaster') html.removeAttribute('data-theme'); else html.setAttribute('data-theme', t);
+    }
     if (s === 'system') html.removeAttribute('data-scheme'); else html.setAttribute('data-scheme', s);
-    try { localStorage.setItem(KEY_THEME, t); localStorage.setItem(KEY_SCHEME, s); } catch (e) { /* private mode: still applies for this page */ }
+    try { if (paletteEnabled) localStorage.setItem(KEY_THEME, t); localStorage.setItem(KEY_SCHEME, s); } catch (e) { /* private mode: still applies for this page */ }
     syncMeta();
     syncControls();
     try { doc.dispatchEvent(new CustomEvent('appearancechange', { detail: get() })); } catch (e) {}
@@ -163,7 +170,7 @@
     opts = opts || {};
     var S = strings(opts), cur = get(), n = ++uid;
     var picks = el('div', { class: 'nl-picks' });
-    THEMES.forEach(function (t) {
+    if (paletteEnabled) THEMES.forEach(function (t) {
       var sw = el('span', { class: 'nl-swatch', 'data-theme': t, 'aria-hidden': 'true' }, [el('i'), el('i'), el('i')]);
       if (cur.scheme !== 'system') sw.setAttribute('data-scheme', cur.scheme);
       picks.appendChild(el('label', { class: 'nl-pick' }, [radio('theme', 'nl-theme-' + n, t, t === cur.theme), sw, S[t]]));
@@ -171,7 +178,7 @@
     var seg = el('div', { class: 'nl-seg' });
     SCHEMES.forEach(function (s) { seg.appendChild(el('label', {}, [radio('scheme', 'nl-scheme-' + n, s, s === cur.scheme), S[s]])); });
     var box = el('div', { class: 'nl-settings' }, [
-      el('fieldset', { class: 'nl-pickset' }, [el('legend', {}, [S.theme]), picks]),
+      paletteEnabled ? el('fieldset', { class: 'nl-pickset' }, [el('legend', {}, [S.theme]), picks]) : null,
       el('fieldset', { class: 'nl-pickset' }, [el('legend', {}, [S.appearance]), seg])
     ]);
     if (opts.shortcuts) {
@@ -179,7 +186,7 @@
       ['on', 'off'].forEach(function (v) { keys.appendChild(el('label', {}, [radio('shortcuts', 'nl-shortcuts-' + n, v, (v === 'on') === on), S[v]])); });
       box.appendChild(el('fieldset', { class: 'nl-pickset', 'aria-describedby': 'nl-shortcuts-note-' + n }, [el('legend', {}, [S.shortcuts]), keys, note]));
     }
-    if (opts.caption !== false) box.appendChild(el('p', { class: 'nl-caption' }, [S.caption]));
+    if (opts.caption !== false) box.appendChild(el('p', { class: 'nl-caption' }, [paletteEnabled ? S.caption : S.schemeCaption]));
     return box;
   }
 
@@ -214,7 +221,7 @@
     });
     doc.body.appendChild(dlg);
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
-    var first = (opts.focus && dlg.querySelector(opts.focus)) || dlg.querySelector('input[data-nl="theme"]:checked');
+    var first = (opts.focus && dlg.querySelector(opts.focus)) || dlg.querySelector('input[data-nl="' + (paletteEnabled ? 'theme' : 'scheme') + '"]:checked');
     if (first) first.focus();
     return dlg;
   }

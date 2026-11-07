@@ -1,8 +1,8 @@
 <!doctype html>
-<html data-suite-scale="fluid" lang="en">
+<html data-suite-scale="fluid" lang="en" data-palette="false">
 <head>
 <meta charset="utf-8">
-<script>/* appearance boot — runs before any stylesheet so the stored palette and light/dark apply on the first paint */(function(){try{var d=document.documentElement,L=window.localStorage,t=L.getItem('nl-theme'),s=L.getItem('nl-scheme');if(s===null){var o=L.getItem('theme')||L.getItem('qm-theme');if(o==='dark'||o==='light')s=o;}if(t==='paper'||t==='ink')d.setAttribute('data-theme',t);if(s==='dark'||s==='light')d.setAttribute('data-scheme',s);}catch(e){}})();</script>
+<script>/* appearance boot — runs before any stylesheet so the stored palette and light/dark apply on the first paint */(function(){try{var d=document.documentElement,L=window.localStorage,t=L.getItem('nl-theme'),s=L.getItem('nl-scheme');if(s===null){var o=L.getItem('theme')||L.getItem('qm-theme');if(o==='dark'||o==='light')s=o;}if(d.getAttribute('data-palette')!=='false'&&(t==='paper'||t==='ink'))d.setAttribute('data-theme',t);if(s==='dark'||s==='light')d.setAttribute('data-scheme',s);}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Ghost job postings as an equity signal — the course report’s figures, not recomputed here: the data is licensed. Vacancy Signal: a course research pipeline (XGBoost, GMM, walk-forward backtest) that runs end to end on synthetic data.">
 <meta name="theme-color" content="#f7e9e8" media="(prefers-color-scheme: light)">
