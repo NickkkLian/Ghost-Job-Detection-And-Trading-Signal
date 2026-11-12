@@ -1,14 +1,12 @@
 # Vacancy Signal
 
-**Ghost job postings as an equity signal — the course report's figures, not recomputed here: the data is licensed.**
+**Ghost job postings as an equity signal.**
+
+Ghost job postings are listings kept active by firms with no genuine intent to hire. We built a **Ghost Job Intensity
+Score** from 310,821 Revelio Labs job postings spanning 2,919 US public firms over 2009–2024. Clustering the firms
+finds a group of genuine hirers at 1.6% ghost intensity and two groups at 44–50%.
 
 **What the report's backtest found (2019–2026):** a long/short on the ghost score lost 22.1%. Holding both tails long returned +216.9% against SPY's +180.1%, at about the same Sharpe (0.84 vs 0.82) and with a deeper worst drawdown (−37.4% vs −33.7%).
-
-**Leak control, runnable here:** on planted synthetic data, high-ghost minus low-ghost total return is **+471.8 percentage points when leaking future scores, versus +5.1 pp with the 45-day publication lag**. This checks that the pipeline catches lookahead; it is not evidence of a working signal. Run `python scripts/check.py`.
-
-**Try it:** [open the results page](https://nickkklian.github.io/Ghost-Job-Detection-And-Trading-Signal/), or run the pipeline on synthetic data with the four commands under [Run it in 60 seconds](#run-it-in-60-seconds-synthetic-data-no-licence-no-network).
-
-![Vacancy Signal](.github/header.png)
 
 [![Vacancy Signal results page: the long/short and both-tails results from the report, the return bars and the strategy table](docs/screenshot-results.png)](https://nickkklian.github.io/Ghost-Job-Detection-And-Trading-Signal/)
 
@@ -18,15 +16,11 @@
 Sauder School of Business, University of British Columbia  
 COMM 486I — Applied AI in Finance
 
-**[Open the results page →](https://nickkklian.github.io/Ghost-Job-Detection-And-Trading-Signal/)** · [Report (PDF)](Ghost_Job_Report.pdf) · [Slides (PPTX)](Ghost_Job_Final_Presentation.pptx) · [Notebook](notebooks/Ghost_Job_Pipeline_v2.ipynb)
-
-The figures in this README and on the results page are quoted from the course report. They were produced on
-licensed Revelio Labs data, which is not in this repository, so they cannot be recomputed from it. What *can* be run
-here is the backtest pipeline itself, on synthetic data:
+**[Open the results page →](https://nickkklian.github.io/Ghost-Job-Detection-And-Trading-Signal/)** · [Report (PDF)](Ghost_Job_Report.pdf) · [Slides (PPTX)](Ghost_Job_Final_Presentation.pptx) · [Notebook](notebooks/Ghost_Job_Pipeline_v2.ipynb) · or run the backtest pipeline yourself on synthetic data with the four commands under [Run it in 60 seconds](#run-it-in-60-seconds-synthetic-data-no-licence-no-network).
 
 ## Run it in 60 seconds (synthetic data, no licence, no network)
 
-Python 3.10+.
+The report's figures came from licensed data (see [Data](#data)); the backtest pipeline itself runs here on synthetic data. Python 3.10+.
 
 ```bash
 pip install -r requirements-synthetic.txt
@@ -37,8 +31,8 @@ python scripts/check.py
 
 - `make_synthetic.py` writes `data/synthetic/`: ghost scores for 200 made-up firms in the notebook's output schema
   (tickers `SYN001`…, company names ending in "(synthetic)"), made-up daily prices with the benchmark `SYNMKT`, and a
-  `manifest.json`. Scores and returns are independent by construction, so **the numbers a synthetic backtest prints
-  are not findings** — they show that the pipeline runs.
+  `manifest.json`. Scores and returns are independent by construction, so a synthetic backtest shows the pipeline
+  running, not a finding.
 - `ghost_backtest_v2.py --synthetic` reads those files instead of downloading prices and writes
   `backtest_output/` (daily NAV, metrics, the four-panel chart) and prints a plain-words long/short verdict.
   The buy-and-hold benchmark uses the first and last available closes within the stated window, with no
@@ -362,6 +356,10 @@ Both scripts accept the same arguments; the backtest takes one `--concentration`
 
 ## Checks
 
+**Leak control:** on planted synthetic data, high-ghost minus low-ghost total return is **+471.8 percentage points
+when leaking future scores, versus +5.1 pp with the 45-day publication lag**. This checks that the pipeline catches
+lookahead; it is not evidence of a working signal.
+
 `python scripts/check.py` (exit 0 only if all pass), also run by GitHub Actions on Python 3.10 and 3.13:
 
 1. `make_synthetic.py` writes the score file, the prices and a manifest marked synthetic; every ticker is `SYN###` and
@@ -392,6 +390,9 @@ python scripts/check.py --break
 ---
 
 ## Data
+
+The figures in this README and on the results page are quoted from the course report. They were produced on
+licensed Revelio Labs data, which is not in this repository, so they cannot be recomputed from it.
 
 The Revelio Labs data is **proprietary** and is not included in this repository.
 [`data/README.md`](data/README.md) lists the three Revelio tables the notebook reads, the columns it uses, the files it
