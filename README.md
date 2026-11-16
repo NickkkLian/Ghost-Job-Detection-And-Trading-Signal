@@ -58,7 +58,8 @@ python scripts/check.py
 9. [Checks](#checks)
 10. [Data](#data)
 11. [What is and is not verified](#what-is-and-is-not-verified)
-12. [Citation](#citation)
+12. [Team](#team)
+13. [Citation](#citation)
 
 ---
 
@@ -412,6 +413,12 @@ synthetic pipeline above.
 - **Costs:** a flat 20 bps per rebalance; short borrow fees are not modelled (the backtest prints this caveat).
 - **Score definition:** the report ranks predicted fill rates; the notebook's score file uses a per-firm median ratio
   (see [How the notebook computes the score](#how-the-notebook-computes-the-score)).
+
+---
+
+## Team
+
+Vacancy Signal was built by Nilabh Agrawal, Carter Jaquette and Nick Lian (Group 6) for COMM 486I — Applied AI in Finance at the UBC Sauder School of Business, 2026.
 
 ---
 
