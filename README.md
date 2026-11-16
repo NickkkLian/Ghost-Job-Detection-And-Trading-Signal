@@ -12,7 +12,7 @@ finds a group of genuine hirers at 1.6% ghost intensity and two groups at 44–5
 
 *Ghost Job Detection: A Labor Market Mispricing Signal* — course research by
 
-**Nilabh Agrawal, Carter Jaquette, and Nick Lian**  
+**Nilabh Agrawal, Carter Jaquette, and Zixi Lian**  
 Sauder School of Business, University of British Columbia  
 COMM 486I — Applied AI in Finance
 
@@ -418,7 +418,7 @@ synthetic pipeline above.
 
 ## Team
 
-Vacancy Signal was built by Nilabh Agrawal, Carter Jaquette and Nick Lian (Group 6) for COMM 486I — Applied AI in Finance at the UBC Sauder School of Business, 2026.
+Vacancy Signal was built by Nilabh Agrawal, Carter Jaquette and Zixi Lian (Group 6) for COMM 486I — Applied AI in Finance at the UBC Sauder School of Business, 2026.
 
 ---
 
