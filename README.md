@@ -16,7 +16,7 @@ finds a group of genuine hirers at 1.6% ghost intensity and two groups at 44–5
 Sauder School of Business, University of British Columbia  
 COMM 486I — Applied AI in Finance
 
-**[Open the results page →](https://nickkklian.github.io/Ghost-Job-Detection-And-Trading-Signal/)** · [Report (PDF)](Ghost_Job_Report.pdf) · [Slides (PPTX)](Ghost_Job_Final_Presentation.pptx) · [Notebook](notebooks/Ghost_Job_Pipeline_v2.ipynb) · or run the backtest pipeline yourself on synthetic data with the four commands under [Run it in 60 seconds](#run-it-in-60-seconds-synthetic-data-no-licence-no-network).
+**[Open the results page →](https://nickkklian.github.io/Ghost-Job-Detection-And-Trading-Signal/)** · [Report (PDF)](Ghost_Job_Report.pdf) · [Slides (PPTX)](Ghost_Job_Final_Presentation.pptx) · [Notebook](notebooks/Ghost_Job_Pipeline_v2.ipynb)
 
 ## Run it in 60 seconds (synthetic data, no licence, no network)
 
@@ -65,11 +65,8 @@ python scripts/check.py
 
 ## Overview
 
-Ghost job postings — listings kept active by firms with no genuine intent to hire — are
-a measurable but under-exploited signal in public equity markets. We construct a
-**Ghost Job Intensity Score** from 310,821 Revelio Labs job postings spanning 2,919 US
-public firms over 2009–2024 and backtest whether cross-sectional variation in ghosting
-behaviour shows up in returns. In the report's backtest it does not make a tradeable
+We backtest whether cross-sectional variation in ghosting behaviour, measured by the
+**Ghost Job Intensity Score**, shows up in returns. In the report's backtest it does not make a tradeable
 long/short: long low-ghost, short high-ghost lost 22.1% over 2019–2026, while holding both
 tails long roughly matched SPY on risk-adjusted return (see [Key Results](#key-results)).
 The model's two strongest features are `headcount` and `log_headcount`, so part of what
@@ -179,7 +176,7 @@ balances Type I / Type II error and aligns with the academic ghost-posting liter
 | Long High Ghost | Long top-decile ghost-intensity firms only |
 | Long Low Ghost | Long bottom-decile ghost-intensity firms only |
 | Universe EW | Equal-weight all scored firms |
-| Long / Short | Long low-ghost, short high-ghost (corrected: this row used to say the opposite of the code and of the report, p. 5) |
+| Long / Short | Long low-ghost, short high-ghost |
 | SPY | Benchmark (buy-and-hold) |
 
 ### How the notebook computes the score
@@ -219,7 +216,7 @@ flowchart LR
 ```
 Ghost-Job-Detection-And-Trading-Signal/
 │
-├── README.md                          ← you are here
+├── README.md
 ├── LICENSE
 ├── requirements.txt                   ← everything, including the notebook's packages
 ├── requirements-synthetic.txt         ← enough for the synthetic run and the checks
@@ -377,7 +374,7 @@ lookahead; it is not evidence of a working signal.
 6. The benchmark NAV matches its price ratio over the entire stated window, rather than starting at the first
    score rebalance. A separate fixture checks window boundaries, forward-only gap handling, no return clipping
    or rebalance costs, and refusal of a missing benchmark entry price.
-7. The script prints an honest verdict on synthetic data; loss, gain and break-even cases are also checked, with
+7. The script prints a plain-words verdict on synthetic data; loss, gain and break-even cases are also checked, with
    the reminder that a single backtest is not evidence of a working signal.
 
 `python scripts/check.py --break` removes the `ghost_score` column from the synthetic scores (check 2 must fail) and, in
@@ -393,9 +390,7 @@ python scripts/check.py --break
 ## Data
 
 The figures in this README and on the results page are quoted from the course report. They were produced on
-licensed Revelio Labs data, which is not in this repository, so they cannot be recomputed from it.
-
-The Revelio Labs data is **proprietary** and is not included in this repository.
+**proprietary**, licensed Revelio Labs data, which is not in this repository, so they cannot be recomputed from it.
 [`data/README.md`](data/README.md) lists the three Revelio tables the notebook reads, the columns it uses, the files it
 builds from them, and how researchers can request access (WRDS or a direct academic licence). No licence? Run the
 synthetic pipeline above.

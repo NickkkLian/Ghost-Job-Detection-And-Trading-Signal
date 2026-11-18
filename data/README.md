@@ -1,8 +1,7 @@
 # Data
 
 The raw data used in this project is proprietary and is **not included** in this
-repository. This file describes what data is needed, how it is structured, and how
-to obtain access.
+repository.
 
 ---
 
@@ -111,8 +110,3 @@ Revelio Labs provides a free sample of their company reference data on their web
 [reveliolabs.com/products/research](https://www.reveliolabs.com/products/research/).
 This sample is useful for testing the pipeline schema but does not include the full
 job postings or company measures tables needed to reproduce the results.
-
----
-
-*For questions about data access, contact your institutional library or reach out to
-Revelio Labs directly at research@reveliolabs.com.*
